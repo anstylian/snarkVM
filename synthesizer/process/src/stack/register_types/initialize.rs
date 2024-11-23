@@ -13,6 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use console::{network::TestnetV0, program::Literal};
+
 use super::*;
 
 impl<N: Network> RegisterTypes<N> {
@@ -796,6 +798,23 @@ impl<N: Network> RegisterTypes<N> {
                 matches!(instruction, Instruction::HashManyPSD8(..)),
                 "Instruction '{instruction}' is not for opcode '{opcode}'."
             ),
+            "hash.keccak256.clean" => {
+                // println!("incoming instruction -->{:?}<--", instruction);
+                // let literal = Literal::from_str("1field")?;
+                // let h = synthesizer_program::HashKeccak256Clean::new(
+                //     vec![Operand::Literal(literal)],
+                //     Register::<TestnetV0>::Locator(1),
+                //     PlaintextType::from(LiteralType::Field),
+                // )
+                // .unwrap();
+                // let e = Instruction::HashKeccak256Clean(h);
+                // println!("constructed locally instruction -->{:?}<--", e);
+                //
+                ensure!(
+                    matches!(instruction, Instruction::HashKeccak256Clean(..)),
+                    "check opcode Instruction '{instruction}' is not for opcode '{opcode}'."
+                )
+            }
             _ => bail!("Instruction '{instruction}' is not for opcode '{opcode}'."),
         }
         Ok(())

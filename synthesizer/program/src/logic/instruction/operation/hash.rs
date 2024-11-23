@@ -34,6 +34,7 @@ pub type HashBHP1024<N> = HashInstruction<N, { Hasher::HashBHP1024 as u8 }>;
 
 /// Keccak256 is a cryptographic hash function that outputs a 256-bit digest.
 pub type HashKeccak256<N> = HashInstruction<N, { Hasher::HashKeccak256 as u8 }>;
+pub type HashKeccak256Clean<N> = HashInstruction<N, { Hasher::HashKeccak256Clean as u8 }>;
 /// Keccak384 is a cryptographic hash function that outputs a 384-bit digest.
 pub type HashKeccak384<N> = HashInstruction<N, { Hasher::HashKeccak384 as u8 }>;
 /// Keccak512 is a cryptographic hash function that outputs a 512-bit digest.
@@ -53,7 +54,6 @@ pub type HashPSD8<N> = HashInstruction<N, { Hasher::HashPSD8 as u8 }>;
 
 /// SHA3-256 is a cryptographic hash function that outputs a 256-bit digest.
 pub type HashSha3_256<N> = HashInstruction<N, { Hasher::HashSha3_256 as u8 }>;
-/// SHA3-384 is a cryptographic hash function that outputs a 384-bit digest.
 pub type HashSha3_384<N> = HashInstruction<N, { Hasher::HashSha3_384 as u8 }>;
 /// SHA3-512 is a cryptographic hash function that outputs a 512-bit digest.
 pub type HashSha3_512<N> = HashInstruction<N, { Hasher::HashSha3_512 as u8 }>;
@@ -84,6 +84,7 @@ enum Hasher {
     HashManyPSD2,
     HashManyPSD4,
     HashManyPSD8,
+    HashKeccak256Clean,
 }
 
 /// Returns the expected number of operands given the variant.
@@ -166,7 +167,8 @@ impl<N: Network, const VARIANT: u8> HashInstruction<N, VARIANT> {
             15 => Opcode::Hash("hash_many.psd2"),
             16 => Opcode::Hash("hash_many.psd4"),
             17 => Opcode::Hash("hash_many.psd8"),
-            18.. => panic!("Invalid 'hash' instruction opcode"),
+            18 => Opcode::Hash("hash.keccak256.clean"),
+            19.. => panic!("Invalid 'hash' instruction opcode"),
         }
     }
 
@@ -252,7 +254,8 @@ impl<N: Network, const VARIANT: u8> HashInstruction<N, VARIANT> {
             (15, _) => bail!("'hash_many.psd2' is not yet implemented"),
             (16, _) => bail!("'hash_many.psd4' is not yet implemented"),
             (17, _) => bail!("'hash_many.psd8' is not yet implemented"),
-            (18.., _) => bail!("Invalid 'hash' variant: {VARIANT}"),
+            (18, _) => bail!("evaluate: Clean keccack256 is not implement yet"),
+            (19.., _) => bail!("Invalid 'hash' variant: {VARIANT}"),
             (_, PlaintextType::Struct(..)) => bail!("Cannot hash into a struct"),
             (_, PlaintextType::Array(..)) => bail!("Cannot hash into an array (yet)"),
         };
@@ -323,7 +326,8 @@ impl<N: Network, const VARIANT: u8> HashInstruction<N, VARIANT> {
             (15, _) => bail!("'hash_many.psd2' is not yet implemented"),
             (16, _) => bail!("'hash_many.psd4' is not yet implemented"),
             (17, _) => bail!("'hash_many.psd8' is not yet implemented"),
-            (18.., _) => bail!("Invalid 'hash' variant: {VARIANT}"),
+            (18, _) => bail!("execute: Clean keccack256 is not implement yet"),
+            (19.., _) => bail!("Invalid 'hash' variant: {VARIANT}"),
             (_, PlaintextType::Struct(..)) => bail!("Cannot hash into a struct"),
             (_, PlaintextType::Array(..)) => bail!("Cannot hash into an array (yet)"),
         };
@@ -368,7 +372,8 @@ impl<N: Network, const VARIANT: u8> HashInstruction<N, VARIANT> {
         match VARIANT {
             0..=14 => Ok(vec![RegisterType::Plaintext(self.destination_type.clone())]),
             15..=17 => bail!("'hash_many' is not yet implemented"),
-            18.. => bail!("Invalid 'hash' variant: {VARIANT}"),
+            18 => Ok(vec![RegisterType::Plaintext(self.destination_type.clone())]),
+            19.. => bail!("Invalid 'hash' variant: {VARIANT}"),
         }
     }
 }
