@@ -130,3 +130,37 @@ impl<A: Aleo> ToBits for Plaintext<A> {
         }
     }
 }
+
+impl<A: Aleo> ToPortableBits for Plaintext<A> {
+    type Boolean = Boolean<A>;
+
+    /// Returns this plaintext as a list of **little-endian** bits.
+    fn write_portable_bits_le(&self, vec: &mut Vec<Boolean<A>>) {
+        match self {
+            Self::Literal(literal, bits_le) => {
+                todo!()
+            }
+            Self::Struct(members, bits_le) => {
+                todo!()
+            }
+            Self::Array(elements, bits_le) => {
+                todo!()
+            }
+        }
+    }
+
+    /// Returns this plaintext as a list of **big-endian** bits.
+    fn write_portable_bits_be(&self, vec: &mut Vec<Boolean<A>>) {
+        match self {
+            Self::Literal(literal, bits_be) => {
+                todo!()
+            }
+            Self::Struct(members, bits_be) => {
+                todo!()
+            }
+            Self::Array(elements, bits_be) => {
+                todo!()
+            }
+        }
+    }
+}

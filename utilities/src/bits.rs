@@ -60,6 +60,33 @@ pub trait ToBits: Sized {
     }
 }
 
+pub trait ToPortableBits: Sized {
+    /// Writes `self` into the given vector as a boolean array in little-endian order.
+    fn write_portable_bits_le(&self, vec: &mut Vec<bool>);
+
+    /// Writes `self` into the given vector as a boolean array in big-endian order.
+    fn write_portable_bits_be(&self, vec: &mut Vec<bool>);
+
+    /// Returns `self` as a boolean array in little-endian order.
+    fn to_portable_bits_le(&self) -> Vec<bool> {
+        let mut bits = Vec::new();
+        self.write_portable_bits_le(&mut bits);
+        bits
+    }
+
+    /// Returns `self` as a boolean array in big-endian order.
+    fn to_portable_bits_be(&self) -> Vec<bool> {
+        let mut bits = Vec::new();
+        self.write_portable_bits_be(&mut bits);
+        bits
+    }
+
+    /// An optional indication of how many bits an object can be represented with.
+    fn num_bits() -> Option<usize> {
+        None
+    }
+}
+
 pub trait FromBits: Sized {
     /// Reads `Self` from a boolean array in little-endian order.
     fn from_bits_le(bits: &[bool]) -> Result<Self>;

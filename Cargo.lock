@@ -511,6 +511,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "compare-tiny-keccak"
+version = "0.1.0"
+dependencies = [
+ "tiny-keccak",
+]
+
+[[package]]
 name = "console"
 version = "0.15.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3478,6 +3485,7 @@ dependencies = [
  "snarkvm-circuit",
  "snarkvm-console",
  "snarkvm-synthesizer-process",
+ "snarkvm-utilities",
 ]
 
 [[package]]

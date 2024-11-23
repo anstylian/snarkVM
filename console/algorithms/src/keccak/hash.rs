@@ -48,8 +48,9 @@ fn keccak_224_native(preimage: &[u8]) -> [u8; 28] {
     hash
 }
 
+// TODO: PUB SHOULD BE REMOVED
 /// Computes the Keccak-256 hash of the given preimage as bytes.
-fn keccak_256_native(preimage: &[u8]) -> [u8; 32] {
+pub fn keccak_256_native(preimage: &[u8]) -> [u8; 32] {
     let mut keccak = TinyKeccak::v256();
     keccak.update(preimage);
 

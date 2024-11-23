@@ -45,6 +45,36 @@ impl<E: Environment, I: IntegerType> ToBits for &Integer<E, I> {
     }
 }
 
+impl<E: Environment, I: IntegerType> ToPortableBits for Integer<E, I> {
+    type Boolean = Boolean<E>;
+
+    /// Outputs the little-endian bit representation of `self` *with* trailing zeros.
+    fn write_portable_bits_le(&self, vec: &mut Vec<Self::Boolean>) {
+        (&self).write_portable_bits_le(vec);
+    }
+
+    /// Outputs the big-endian bit representation of `self` *with* leading zeros.
+    fn write_portable_bits_be(&self, vec: &mut Vec<Self::Boolean>) {
+        (&self).write_portable_bits_be(vec);
+    }
+}
+
+impl<E: Environment, I: IntegerType> ToPortableBits for &Integer<E, I> {
+    type Boolean = Boolean<E>;
+
+    /// Outputs the little-endian bit representation of `self` *with* trailing zeros.
+    fn write_portable_bits_le(&self, vec: &mut Vec<Self::Boolean>) {
+        vec.extend_from_slice(&self.bits_le);
+    }
+
+    /// Outputs the big-endian bit representation of `self` *with* leading zeros.
+    fn write_portable_bits_be(&self, vec: &mut Vec<Self::Boolean>) {
+        let initial_len = vec.len();
+        self.write_portable_bits_le(vec);
+        vec[initial_len..].reverse();
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

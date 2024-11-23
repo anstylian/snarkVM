@@ -286,6 +286,9 @@ pub fn cost_per_command<N: Network>(
         Command::Instruction(Instruction::HashKeccak256(hash)) => {
             cost_in_size(stack, finalize, hash.operands(), HASH_PER_BYTE_COST, HASH_BASE_COST)
         }
+        Command::Instruction(Instruction::PortableHashKeccak256(hash)) => {
+            cost_in_size(stack, finalize, hash.operands(), HASH_PER_BYTE_COST, HASH_BASE_COST)
+        }
         Command::Instruction(Instruction::HashKeccak384(hash)) => {
             cost_in_size(stack, finalize, hash.operands(), HASH_PER_BYTE_COST, HASH_BASE_COST)
         }

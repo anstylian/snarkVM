@@ -59,7 +59,7 @@ members = [
   "console/types/integers",
   "console/types/scalar",
   "console/types/string",
-  "curves",
+  "curves", "example/compare-tiny-keccak",
   "fields",
   "ledger",
   "ledger/authority",

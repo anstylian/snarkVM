@@ -202,6 +202,7 @@ pub enum Instruction<N: Network> {
     Ternary(Ternary<N>),
     /// Performs a bitwise `xor` on `first` and `second`, storing the outcome in `destination`.
     Xor(Xor<N>),
+    PortableHashKeccak256(PortableHashKeccak256<N>),
 }
 
 /// Creates a match statement that applies the given operation for each instruction.
@@ -301,6 +302,7 @@ macro_rules! instruction {
             SubWrapped,
             Ternary,
             Xor,
+            PortableHashKeccak256,
         }}
     };
     // A variant **without** curly braces:

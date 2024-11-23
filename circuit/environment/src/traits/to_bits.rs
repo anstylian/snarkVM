@@ -100,6 +100,90 @@ impl<C: ToBits<Boolean = B>, B: BooleanTrait> ToBits for &[C] {
     }
 }
 
+pub trait ToPortableBits {
+    type Boolean: BooleanTrait;
+
+    /// Returns the little-endian bits of the circuit.
+    fn to_portable_bits_le(&self) -> Vec<Self::Boolean> {
+        let mut bits = vec![];
+        self.write_portable_bits_le(&mut bits);
+        bits
+    }
+
+    fn write_portable_bits_le(&self, vec: &mut Vec<Self::Boolean>);
+
+    /// Returns the big-endian bits of the circuit.
+    fn to_portable_bits_be(&self) -> Vec<Self::Boolean> {
+        let mut bits = vec![];
+        self.write_portable_bits_be(&mut bits);
+        bits
+    }
+
+    fn write_portable_bits_be(&self, vec: &mut Vec<Self::Boolean>);
+}
+
+/********************/
+/****** Arrays ******/
+/********************/
+
+impl<C: ToPortableBits<Boolean = B>, B: BooleanTrait> ToPortableBits for Vec<C> {
+    type Boolean = B;
+
+    /// A helper method to return a concatenated list of little-endian bits from the circuits.
+    #[inline]
+    fn write_portable_bits_le(&self, vec: &mut Vec<Self::Boolean>) {
+        // The vector is order-preserving, meaning the first circuit in is the first circuit bits out.
+        self.as_slice().write_portable_bits_le(vec);
+    }
+
+    /// A helper method to return a concatenated list of big-endian bits from the circuits.
+    #[inline]
+    fn write_portable_bits_be(&self, vec: &mut Vec<Self::Boolean>) {
+        // The vector is order-preserving, meaning the first circuit in is the first circuit bits out.
+        self.as_slice().write_portable_bits_be(vec);
+    }
+}
+
+impl<C: ToPortableBits<Boolean = B>, B: BooleanTrait, const N: usize> ToPortableBits for [C; N] {
+    type Boolean = B;
+
+    /// A helper method to return a concatenated list of little-endian bits from the circuits.
+    #[inline]
+    fn write_portable_bits_le(&self, vec: &mut Vec<Self::Boolean>) {
+        // The slice is order-preserving, meaning the first circuit in is the first circuit bits out.
+        self.as_slice().write_portable_bits_le(vec);
+    }
+
+    /// A helper method to return a concatenated list of big-endian bits from the circuits.
+    #[inline]
+    fn write_portable_bits_be(&self, vec: &mut Vec<Self::Boolean>) {
+        // The slice is order-preserving, meaning the first circuit in is the first circuit bits out.
+        self.as_slice().write_portable_bits_be(vec);
+    }
+}
+
+impl<C: ToPortableBits<Boolean = B>, B: BooleanTrait> ToPortableBits for &[C] {
+    type Boolean = B;
+
+    /// A helper method to return a concatenated list of little-endian bits from the circuits.
+    #[inline]
+    fn write_portable_bits_le(&self, vec: &mut Vec<Self::Boolean>) {
+        // The slice is order-preserving, meaning the first circuit in is the first circuit bits out.
+        for elem in self.iter() {
+            elem.write_portable_bits_le(vec);
+        }
+    }
+
+    /// A helper method to return a concatenated list of big-endian bits from the circuits.
+    #[inline]
+    fn write_portable_bits_be(&self, vec: &mut Vec<Self::Boolean>) {
+        // The slice is order-preserving, meaning the first circuit in is the first circuit bits out.
+        for elem in self.iter() {
+            elem.write_portable_bits_be(vec);
+        }
+    }
+}
+
 /********************/
 /****** Tuples ******/
 /********************/
@@ -157,3 +241,56 @@ to_bits_tuple!((C0, 0), (C1, 1), (C2, 2), (C3, 3), (C4, 4), (C5, 5), (C6, 6), (C
 to_bits_tuple!((C0, 0), (C1, 1), (C2, 2), (C3, 3), (C4, 4), (C5, 5), (C6, 6), (C7, 7), (C8, 8));
 to_bits_tuple!((C0, 0), (C1, 1), (C2, 2), (C3, 3), (C4, 4), (C5, 5), (C6, 6), (C7, 7), (C8, 8), (C9, 9));
 to_bits_tuple!((C0, 0), (C1, 1), (C2, 2), (C3, 3), (C4, 4), (C5, 5), (C6, 6), (C7, 7), (C8, 8), (C9, 9), (C10, 10));
+
+macro_rules! to_portable_bits_tuple {
+    (($t0:ident, $i0:tt), $(($ty:ident, $idx:tt)),+) => {
+        impl<B: BooleanTrait, $t0: ToPortableBits<Boolean = B>, $($ty: ToPortableBits<Boolean = B>),+> ToPortableBits for ($t0, $($ty),+) {
+            type Boolean = B;
+
+            /// A helper method to return a concatenated list of little-endian bits from the circuits.
+            #[inline]
+            fn write_portable_bits_le(&self, vec: &mut Vec<Self::Boolean>) {
+                // The tuple is order-preserving, meaning the first circuit in is the first circuit bits out.
+                (&self).write_portable_bits_le(vec);
+            }
+
+            /// A helper method to return a concatenated list of big-endian bits from the circuits.
+            #[inline]
+            fn write_portable_bits_be(&self, vec: &mut Vec<Self::Boolean>) {
+                // The tuple is order-preserving, meaning the first circuit in is the first circuit bits out.
+                (&self).write_portable_bits_be(vec);
+            }
+        }
+
+        impl<'a, B: BooleanTrait, $t0: ToPortableBits<Boolean = B>, $($ty: ToPortableBits<Boolean = B>),+> ToPortableBits for &'a ($t0, $($ty),+) {
+            type Boolean = B;
+
+            /// A helper method to return a concatenated list of little-endian bits from the circuits.
+            #[inline]
+            fn write_portable_bits_le(&self, vec: &mut Vec<Self::Boolean>) {
+                // The tuple is order-preserving, meaning the first circuit in is the first circuit bits out.
+                self.$i0.write_portable_bits_le(vec);
+                $(self.$idx.write_portable_bits_le(vec);)+
+            }
+
+            /// A helper method to return a concatenated list of big-endian bits from the circuits.
+            #[inline]
+            fn write_portable_bits_be(&self, vec: &mut Vec<Self::Boolean>) {
+                // The tuple is order-preserving, meaning the first circuit in is the first circuit bits out.
+                self.$i0.write_portable_bits_be(vec);
+                $(self.$idx.write_portable_bits_be(vec);)+
+            }
+        }
+    }
+}
+
+to_portable_bits_tuple!((C0, 0), (C1, 1));
+to_portable_bits_tuple!((C0, 0), (C1, 1), (C2, 2));
+to_portable_bits_tuple!((C0, 0), (C1, 1), (C2, 2), (C3, 3));
+to_portable_bits_tuple!((C0, 0), (C1, 1), (C2, 2), (C3, 3), (C4, 4));
+to_portable_bits_tuple!((C0, 0), (C1, 1), (C2, 2), (C3, 3), (C4, 4), (C5, 5));
+to_portable_bits_tuple!((C0, 0), (C1, 1), (C2, 2), (C3, 3), (C4, 4), (C5, 5), (C6, 6));
+to_portable_bits_tuple!((C0, 0), (C1, 1), (C2, 2), (C3, 3), (C4, 4), (C5, 5), (C6, 6), (C7, 7));
+to_portable_bits_tuple!((C0, 0), (C1, 1), (C2, 2), (C3, 3), (C4, 4), (C5, 5), (C6, 6), (C7, 7), (C8, 8));
+to_portable_bits_tuple!((C0, 0), (C1, 1), (C2, 2), (C3, 3), (C4, 4), (C5, 5), (C6, 6), (C7, 7), (C8, 8), (C9, 9));
+to_portable_bits_tuple!((C0, 0), (C1, 1), (C2, 2), (C3, 3), (C4, 4), (C5, 5), (C6, 6), (C7, 7), (C8, 8), (C9, 9), (C10, 10));

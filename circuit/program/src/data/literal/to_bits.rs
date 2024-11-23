@@ -15,6 +15,20 @@
 
 use super::*;
 
+impl<A: Aleo> ToPortableBits for Literal<A> {
+    type Boolean = Boolean<A>;
+
+    /// Returns the little-endian bits of the literal.
+    fn write_portable_bits_le(&self, vec: &mut Vec<Boolean<A>>) {
+        (&self).write_bits_le(vec);
+    }
+
+    /// Returns the big-endian bits of the literal.
+    fn write_portable_bits_be(&self, vec: &mut Vec<Boolean<A>>) {
+        todo!()
+    }
+}
+
 impl<A: Aleo> ToBits for Literal<A> {
     type Boolean = Boolean<A>;
 
