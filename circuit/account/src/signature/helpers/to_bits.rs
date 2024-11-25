@@ -28,6 +28,10 @@ impl<A: Aleo> ToBits for Signature<A> {
     fn write_bits_be(&self, vec: &mut Vec<Self::Boolean>) {
         (&self).write_bits_be(vec);
     }
+
+    fn write_bits(&self, vec: &mut Vec<Self::Boolean>) {
+        todo!()
+    }
 }
 
 #[cfg(feature = "console")]
@@ -52,6 +56,10 @@ impl<A: Aleo> ToBits for &Signature<A> {
         self.response.write_bits_be(vec);
         // Write the compute key bits.
         self.compute_key.write_bits_be(vec);
+    }
+
+    fn write_bits(&self, vec: &mut Vec<Self::Boolean>) {
+        todo!()
     }
 }
 

@@ -49,6 +49,10 @@ impl<A: Aleo> ToBits for Record<A, Plaintext<A>> {
         vec.extend_from_slice(&data_bits_be);
         self.nonce.write_bits_be(vec);
     }
+
+    fn write_bits(&self, vec: &mut Vec<Self::Boolean>) {
+        todo!()
+    }
 }
 
 impl<A: Aleo> ToBits for Record<A, Ciphertext<A>> {
@@ -84,5 +88,9 @@ impl<A: Aleo> ToBits for Record<A, Ciphertext<A>> {
         U32::constant(console::U32::new(data_bits_be.len() as u32)).write_bits_be(vec);
         vec.extend_from_slice(&data_bits_be);
         self.nonce.write_bits_be(vec);
+    }
+
+    fn write_bits(&self, vec: &mut Vec<Self::Boolean>) {
+        todo!()
     }
 }

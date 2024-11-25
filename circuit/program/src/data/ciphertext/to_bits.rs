@@ -31,4 +31,8 @@ impl<A: Aleo> ToBits for Ciphertext<A> {
         self.0.write_bits_be(vec);
         assert_eq!(self.0.len() * A::BaseField::size_in_bits(), vec.len() - initial_len);
     }
+
+    fn write_bits(&self, vec: &mut Vec<Self::Boolean>) {
+        todo!()
+    }
 }

@@ -27,6 +27,10 @@ impl<A: Aleo> ToBits for ProgramID<A> {
     fn write_bits_be(&self, vec: &mut Vec<Self::Boolean>) {
         (&self).write_bits_be(vec);
     }
+
+    fn write_bits(&self, vec: &mut Vec<Self::Boolean>) {
+        todo!()
+    }
 }
 
 impl<A: Aleo> ToBits for &ProgramID<A> {
@@ -42,6 +46,10 @@ impl<A: Aleo> ToBits for &ProgramID<A> {
     fn write_bits_be(&self, vec: &mut Vec<Self::Boolean>) {
         self.name().write_bits_be(vec);
         self.network().write_bits_be(vec);
+    }
+
+    fn write_bits(&self, vec: &mut Vec<Self::Boolean>) {
+        todo!()
     }
 }
 

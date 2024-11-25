@@ -194,6 +194,10 @@ impl<A: Aleo> ToBits for Owner<A, Plaintext<A>> {
             _ => A::halt("Internal error: plaintext to_bits_be corrupted in record owner"),
         };
     }
+
+    fn write_bits(&self, vec: &mut Vec<Self::Boolean>) {
+        todo!()
+    }
 }
 
 impl<A: Aleo> ToBits for Owner<A, Ciphertext<A>> {
@@ -227,5 +231,9 @@ impl<A: Aleo> ToBits for Owner<A, Ciphertext<A>> {
                 }
             }
         };
+    }
+
+    fn write_bits(&self, vec: &mut Vec<Self::Boolean>) {
+        todo!()
     }
 }

@@ -101,4 +101,8 @@ impl<A: Aleo> ToBits for TransitionLeaf<A> {
         self.variant.write_bits_be(vec);
         self.id.write_bits_be(vec);
     }
+
+    fn write_bits(&self, vec: &mut Vec<Self::Boolean>) {
+        todo!()
+    }
 }

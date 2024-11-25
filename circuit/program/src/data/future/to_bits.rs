@@ -70,4 +70,8 @@ impl<A: Aleo> ToBits for Future<A> {
             vec.extend_from_slice(&argument_bits);
         }
     }
+
+    fn write_bits(&self, vec: &mut Vec<Self::Boolean>) {
+        todo!()
+    }
 }

@@ -19,6 +19,14 @@ use crate::BooleanTrait;
 pub trait ToBits {
     type Boolean: BooleanTrait;
 
+    fn to_bits(&self) -> Vec<Self::Boolean> {
+        let mut bits = vec![];
+        self.write_bits(&mut bits);
+        bits
+    }
+
+    fn write_bits(&self, vec: &mut Vec<Self::Boolean>);
+
     /// Returns the little-endian bits of the circuit.
     fn to_bits_le(&self) -> Vec<Self::Boolean> {
         let mut bits = vec![];
@@ -45,6 +53,10 @@ pub trait ToBits {
 impl<C: ToBits<Boolean = B>, B: BooleanTrait> ToBits for Vec<C> {
     type Boolean = B;
 
+    fn write_bits(&self, vec: &mut Vec<Self::Boolean>) {
+        self.as_slice().write_bits(vec);
+    }
+
     /// A helper method to return a concatenated list of little-endian bits from the circuits.
     #[inline]
     fn write_bits_le(&self, vec: &mut Vec<Self::Boolean>) {
@@ -63,6 +75,10 @@ impl<C: ToBits<Boolean = B>, B: BooleanTrait> ToBits for Vec<C> {
 impl<C: ToBits<Boolean = B>, B: BooleanTrait, const N: usize> ToBits for [C; N] {
     type Boolean = B;
 
+    fn write_bits(&self, vec: &mut Vec<Self::Boolean>) {
+        self.as_slice().write_bits(vec);
+    }
+
     /// A helper method to return a concatenated list of little-endian bits from the circuits.
     #[inline]
     fn write_bits_le(&self, vec: &mut Vec<Self::Boolean>) {
@@ -80,6 +96,12 @@ impl<C: ToBits<Boolean = B>, B: BooleanTrait, const N: usize> ToBits for [C; N] 
 
 impl<C: ToBits<Boolean = B>, B: BooleanTrait> ToBits for &[C] {
     type Boolean = B;
+
+    fn write_bits(&self, vec: &mut Vec<Self::Boolean>) {
+        for elem in self.iter() {
+            elem.write_bits(vec);
+        }
+    }
 
     /// A helper method to return a concatenated list of little-endian bits from the circuits.
     #[inline]
@@ -110,6 +132,10 @@ macro_rules! to_bits_tuple {
         impl<B: BooleanTrait, $t0: ToBits<Boolean = B>, $($ty: ToBits<Boolean = B>),+> ToBits for ($t0, $($ty),+) {
             type Boolean = B;
 
+            fn write_bits(&self, vec: &mut Vec<Self::Boolean>) {
+                (&self).write_bits(vec);
+            }
+
             /// A helper method to return a concatenated list of little-endian bits from the circuits.
             #[inline]
             fn write_bits_le(&self, vec: &mut Vec<Self::Boolean>) {
@@ -127,6 +153,11 @@ macro_rules! to_bits_tuple {
 
         impl<'a, B: BooleanTrait, $t0: ToBits<Boolean = B>, $($ty: ToBits<Boolean = B>),+> ToBits for &'a ($t0, $($ty),+) {
             type Boolean = B;
+
+            fn write_bits(&self, vec: &mut Vec<Self::Boolean>) {
+                self.$i0.write_bits(vec);
+                $(self.$idx.write_bits(vec);)+
+            }
 
             /// A helper method to return a concatenated list of little-endian bits from the circuits.
             #[inline]

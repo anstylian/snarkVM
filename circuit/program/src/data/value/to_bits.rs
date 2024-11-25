@@ -37,4 +37,12 @@ impl<A: Aleo> ToBits for Value<A> {
             Self::Future(future) => future.write_bits_be(vec),
         };
     }
+
+    fn write_bits(&self, vec: &mut Vec<Self::Boolean>) {
+        match self {
+            Self::Plaintext(plaintext) => plaintext.write_bits(vec),
+            Self::Record(record) => record.write_bits(vec),
+            Self::Future(future) => future.write_bits(vec),
+        };
+    }
 }

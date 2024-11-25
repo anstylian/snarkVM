@@ -237,7 +237,31 @@ impl Aleo for AleoV0 {
     }
 
     fn hash_keccak256_clean(input: &[Boolean<Self>]) -> Vec<Boolean<Self>> {
-        todo!()
+        eprintln!("This one is called 2");
+        let bits: Vec<bool> = input.iter().map(|b| b.eject_value()).collect();
+        println!("{bits:?}");
+        let bits: Vec<u8> = bits.chunks(8).map(|chunk| {
+            let mut byte = 0;
+            for (i, bit) in chunk.iter().enumerate() {
+                byte |= (*bit as u8) << i;
+            }
+            byte
+        }).collect();
+
+        // print bits as binary bits
+        println!("Bits: ");
+        for byte in bits.iter() {
+            print!("{:08b} ", byte);
+        }
+        println!();
+
+        println!("Chars: ");
+        for byte in bits.iter() {
+            print!("'{}' ", *byte as char);
+        }
+        println!();
+
+        vec![]
     }
 
     /// Returns the Keccak hash with a 384-bit output.

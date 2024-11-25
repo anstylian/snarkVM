@@ -27,6 +27,10 @@ impl<E: Environment, I: IntegerType> ToBits for Integer<E, I> {
     fn write_bits_be(&self, vec: &mut Vec<Self::Boolean>) {
         (&self).write_bits_be(vec);
     }
+
+    fn write_bits(&self, vec: &mut Vec<Self::Boolean>) {
+        todo!()
+    }
 }
 
 impl<E: Environment, I: IntegerType> ToBits for &Integer<E, I> {
@@ -42,6 +46,10 @@ impl<E: Environment, I: IntegerType> ToBits for &Integer<E, I> {
         let initial_len = vec.len();
         self.write_bits_le(vec);
         vec[initial_len..].reverse();
+    }
+
+    fn write_bits(&self, vec: &mut Vec<Self::Boolean>) {
+        todo!()
     }
 }
 

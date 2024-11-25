@@ -14,7 +14,11 @@ program hash.aleo {
         };
         */
 
-        let foobar_item: u8 = 97u8;
-        return Keccak256::hash_to_field(foobar_item);
+//        let foobar_item: u8 = 97u8;
+        let foobar: FooBar = FooBar {
+            foo: 5u8,
+            bar: 8u16,
+        };
+        return Keccak256::hash_to_field(foobar);
     }
 }

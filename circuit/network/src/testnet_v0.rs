@@ -237,7 +237,9 @@ impl Aleo for AleoTestnetV0 {
     }
 
     fn hash_keccak256_clean(input: &[Boolean<Self>]) -> Vec<Boolean<Self>> {
-        KECCAK_256.with(|keccak| keccak.hash(input))
+        eprintln!("This one is called");
+        vec![]
+        // KECCAK_256.with(|keccak| keccak.hash(input))
     }
 
     /// Returns the Keccak hash with a 384-bit output.

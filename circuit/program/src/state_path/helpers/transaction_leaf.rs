@@ -86,4 +86,8 @@ impl<A: Aleo> ToBits for TransactionLeaf<A> {
         self.index.write_bits_be(vec);
         self.id.write_bits_be(vec);
     }
+
+    fn write_bits(&self, vec: &mut Vec<Self::Boolean>) {
+        todo!()
+    }
 }

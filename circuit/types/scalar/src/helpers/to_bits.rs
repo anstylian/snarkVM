@@ -27,6 +27,10 @@ impl<E: Environment> ToBits for Scalar<E> {
     fn write_bits_be(&self, vec: &mut Vec<Self::Boolean>) {
         (&self).write_bits_be(vec);
     }
+
+    fn write_bits(&self, vec: &mut Vec<Self::Boolean>) {
+        todo!()
+    }
 }
 
 impl<E: Environment> ToBits for &Scalar<E> {
@@ -64,6 +68,10 @@ impl<E: Environment> ToBits for &Scalar<E> {
         let initial_len = vec.len();
         self.write_bits_le(vec);
         vec[initial_len..].reverse();
+    }
+
+    fn write_bits(&self, vec: &mut Vec<Self::Boolean>) {
+        todo!()
     }
 }
 

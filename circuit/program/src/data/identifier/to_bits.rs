@@ -27,6 +27,10 @@ impl<A: Aleo> ToBits for Identifier<A> {
     fn write_bits_be(&self, vec: &mut Vec<Self::Boolean>) {
         (&self).write_bits_be(vec);
     }
+
+    fn write_bits(&self, vec: &mut Vec<Self::Boolean>) {
+        todo!()
+    }
 }
 
 impl<A: Aleo> ToBits for &Identifier<A> {
@@ -44,6 +48,10 @@ impl<A: Aleo> ToBits for &Identifier<A> {
         let initial_len = vec.len();
         self.write_bits_le(vec);
         vec[initial_len..].reverse();
+    }
+
+    fn write_bits(&self, vec: &mut Vec<Self::Boolean>) {
+        todo!()
     }
 }
 

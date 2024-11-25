@@ -20,7 +20,6 @@ use crate::{
 use console::{
     network::prelude::*,
     program::{Literal, LiteralType, Plaintext, PlaintextType, Register, RegisterType, Value},
-    types::Boolean,
 };
 
 /// BHP256 is a collision-resistant hash function that processes inputs in 256-bit chunks.
@@ -327,7 +326,19 @@ impl<N: Network, const VARIANT: u8> HashInstruction<N, VARIANT> {
             (16, _) => bail!("'hash_many.psd4' is not yet implemented"),
             (17, _) => bail!("'hash_many.psd8' is not yet implemented"),
             (18, PlaintextType::Literal(..)) => {
-                bail!("execute: Clean keccack256 is not implement yet");
+                // use circuit::traits::FromBits;
+                // let s = circuit::StringType::from_bits_le(&input.to_bits_le());
+                // let s = StringType::from_bits_le(&input.to_bits_le());
+                // circuit::Literal::String(s)
+                let bits = input.to_bits_le();
+                println!("bits: >{bits:?}<");
+                A::hash_keccak256(&bits);
+
+                std::thread::sleep(std::time::Duration::from_secs(1));
+                // let bits = input.to_bits_be();
+                // A::hash_keccak256_clean(&bits);
+                // bail!("execute: Clean keccack256 is not implement yet");
+                todo!()
             }
             (19.., _) => bail!("Invalid 'hash' variant: {VARIANT}"),
             (_, PlaintextType::Struct(..)) => bail!("Cannot hash into a struct"),

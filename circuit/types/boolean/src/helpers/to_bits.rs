@@ -27,6 +27,10 @@ impl<E: Environment> ToBits for Boolean<E> {
     fn write_bits_be(&self, vec: &mut Vec<Self::Boolean>) {
         (&self).write_bits_be(vec);
     }
+
+    fn write_bits(&self, vec: &mut Vec<Self::Boolean>) {
+        todo!()
+    }
 }
 
 impl<E: Environment> ToBits for &Boolean<E> {
@@ -40,6 +44,10 @@ impl<E: Environment> ToBits for &Boolean<E> {
     /// Outputs `self` as a single-element vector.
     fn write_bits_be(&self, vec: &mut Vec<Self::Boolean>) {
         vec.push((*self).clone());
+    }
+
+    fn write_bits(&self, vec: &mut Vec<Self::Boolean>) {
+        todo!()
     }
 }
 

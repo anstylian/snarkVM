@@ -27,6 +27,10 @@ impl<E: Environment> ToBits for StringType<E> {
     fn write_bits_be(&self, vec: &mut Vec<Self::Boolean>) {
         (&self).write_bits_be(vec);
     }
+
+    fn write_bits(&self, vec: &mut Vec<Self::Boolean>) {
+        todo!()
+    }
 }
 
 impl<E: Environment> ToBits for &StringType<E> {
@@ -40,6 +44,10 @@ impl<E: Environment> ToBits for &StringType<E> {
     /// Outputs the big-endian bit representation of `self` *with* leading zeros (to byte-alignment).
     fn write_bits_be(&self, vec: &mut Vec<Self::Boolean>) {
         self.bytes.write_bits_be(vec);
+    }
+
+    fn write_bits(&self, vec: &mut Vec<Self::Boolean>) {
+        todo!()
     }
 }
 

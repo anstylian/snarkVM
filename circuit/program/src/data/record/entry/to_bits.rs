@@ -45,6 +45,10 @@ impl<A: Aleo> ToBits for Entry<A, Plaintext<A>> {
             Self::Private(plaintext) => plaintext.write_bits_be(vec),
         };
     }
+
+    fn write_bits(&self, vec: &mut Vec<Self::Boolean>) {
+        todo!()
+    }
 }
 
 impl<A: Aleo> ToBits for Entry<A, Ciphertext<A>> {
@@ -76,5 +80,9 @@ impl<A: Aleo> ToBits for Entry<A, Ciphertext<A>> {
             Self::Public(plaintext) => plaintext.write_bits_be(vec),
             Self::Private(plaintext) => plaintext.write_bits_be(vec),
         };
+    }
+
+    fn write_bits(&self, vec: &mut Vec<Self::Boolean>) {
+        todo!()
     }
 }

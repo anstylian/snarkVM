@@ -26,10 +26,17 @@ impl<A: Aleo> ToBits for Plaintext<A> {
                 let bits = bits_le.get_or_init(|| {
                     let mut bits_le = Vec::new();
                     bits_le.extend([Boolean::constant(false), Boolean::constant(false)]); // Variant bit.
+                    println!("varian: {:?}", bits_le);
                     literal.variant().write_bits_le(&mut bits_le);
+                    println!("literal: {:?}", bits_le);
+                    let s = literal.size_in_bits();
+                    println!("s: {:?}", s);
                     literal.size_in_bits().write_bits_le(&mut bits_le);
+                    println!("literal size: {:?}", bits_le);
                     literal.write_bits_le(&mut bits_le);
+                    println!("the literal: {:?}", bits_le);
                     bits_le.shrink_to_fit();
+                    println!("shrink_to_fit: {:?}", bits_le);
                     bits_le
                 });
                 // Extend the vector with the bits of the literal.
@@ -126,6 +133,20 @@ impl<A: Aleo> ToBits for Plaintext<A> {
                 });
                 // Extend the vector with the bits of the array.
                 vec.extend_from_slice(bits)
+            }
+        }
+    }
+
+    fn write_bits(&self, vec: &mut Vec<Self::Boolean>) {
+        match self {
+            Self::Literal(literal, bits_be) => {
+                todo!()
+            }
+            Self::Struct(members, bits_be) => {
+                todo!()
+            }
+            Self::Array(elements, bits_be) => {
+                todo!()
             }
         }
     }

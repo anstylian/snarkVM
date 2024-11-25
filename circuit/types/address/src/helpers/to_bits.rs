@@ -27,6 +27,10 @@ impl<E: Environment> ToBits for Address<E> {
     fn write_bits_be(&self, vec: &mut Vec<Self::Boolean>) {
         (&self).write_bits_be(vec);
     }
+
+    fn write_bits(&self, vec: &mut Vec<Self::Boolean>) {
+        todo!()
+    }
 }
 
 impl<E: Environment> ToBits for &Address<E> {
@@ -40,6 +44,10 @@ impl<E: Environment> ToBits for &Address<E> {
     /// Outputs the big-endian bit representation of `self.x` *without* leading zeros.
     fn write_bits_be(&self, vec: &mut Vec<Self::Boolean>) {
         self.0.write_bits_be(vec);
+    }
+
+    fn write_bits(&self, vec: &mut Vec<Self::Boolean>) {
+        todo!()
     }
 }
 

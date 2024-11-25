@@ -110,4 +110,8 @@ impl<A: Aleo> ToBits for Argument<A> {
             }
         }
     }
+
+    fn write_bits(&self, vec: &mut Vec<Self::Boolean>) {
+        todo!()
+    }
 }

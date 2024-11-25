@@ -27,6 +27,10 @@ impl<A: Aleo> ToBits for Literal<A> {
     fn write_bits_be(&self, vec: &mut Vec<Boolean<A>>) {
         (&self).write_bits_be(vec);
     }
+
+    fn write_bits(&self, vec: &mut Vec<Boolean<A>>) {
+        todo!()
+    }
 }
 
 impl<A: Aleo> ToBits for &Literal<A> {
@@ -76,5 +80,9 @@ impl<A: Aleo> ToBits for &Literal<A> {
             Literal::Signature(literal) => literal.write_bits_be(vec),
             Literal::String(literal) => literal.write_bits_be(vec),
         }
+    }
+
+    fn write_bits(&self, vec: &mut Vec<Boolean<A>>) {
+        todo!()
     }
 }
