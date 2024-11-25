@@ -236,6 +236,10 @@ impl Aleo for AleoTestnetV0 {
         KECCAK_256.with(|keccak| keccak.hash(input))
     }
 
+    fn hash_keccak256_clean(input: &[Boolean<Self>]) -> Vec<Boolean<Self>> {
+        KECCAK_256.with(|keccak| keccak.hash(input))
+    }
+
     /// Returns the Keccak hash with a 384-bit output.
     fn hash_keccak384(input: &[Boolean<Self>]) -> Vec<Boolean<Self>> {
         KECCAK_384.with(|keccak| keccak.hash(input))

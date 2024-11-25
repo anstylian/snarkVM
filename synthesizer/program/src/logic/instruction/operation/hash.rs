@@ -14,13 +14,13 @@
 // limitations under the License.
 
 use crate::{
-    Opcode,
-    Operand,
     traits::{RegistersLoad, RegistersLoadCircuit, RegistersStore, RegistersStoreCircuit, StackMatches, StackProgram},
+    Opcode, Operand,
 };
 use console::{
     network::prelude::*,
     program::{Literal, LiteralType, Plaintext, PlaintextType, Register, RegisterType, Value},
+    types::Boolean,
 };
 
 /// BHP256 is a collision-resistant hash function that processes inputs in 256-bit chunks.
@@ -326,7 +326,9 @@ impl<N: Network, const VARIANT: u8> HashInstruction<N, VARIANT> {
             (15, _) => bail!("'hash_many.psd2' is not yet implemented"),
             (16, _) => bail!("'hash_many.psd4' is not yet implemented"),
             (17, _) => bail!("'hash_many.psd8' is not yet implemented"),
-            (18, _) => bail!("execute: Clean keccack256 is not implement yet"),
+            (18, PlaintextType::Literal(..)) => {
+                bail!("execute: Clean keccack256 is not implement yet");
+            }
             (19.., _) => bail!("Invalid 'hash' variant: {VARIANT}"),
             (_, PlaintextType::Struct(..)) => bail!("Cannot hash into a struct"),
             (_, PlaintextType::Array(..)) => bail!("Cannot hash into an array (yet)"),

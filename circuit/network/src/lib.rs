@@ -98,6 +98,7 @@ pub trait Aleo: Environment {
 
     /// Returns the Keccak hash with a 256-bit output.
     fn hash_keccak256(input: &[Boolean<Self>]) -> Vec<Boolean<Self>>;
+    fn hash_keccak256_clean(input: &[Boolean<Self>]) -> Vec<Boolean<Self>>;
 
     /// Returns the Keccak hash with a 384-bit output.
     fn hash_keccak384(input: &[Boolean<Self>]) -> Vec<Boolean<Self>>;
