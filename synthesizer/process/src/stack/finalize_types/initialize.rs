@@ -728,6 +728,10 @@ impl<N: Network> FinalizeTypes<N> {
                     "Instruction '{instruction}' has multiple destinations."
                 );
             }
+            Opcode::PortableHash(opcode) => {
+                // RegisterTypes::check_portable_hash_opcode(opcode, instruction)?;
+                todo!()
+            },
         }
         Ok(())
     }

@@ -596,6 +596,12 @@ impl<N: Network> RegisterTypes<N> {
                     "Instruction '{instruction}' has multiple destinations."
                 );
             }
+            Opcode::PortableHash(opcode) => {
+                ensure!(
+                    matches!(instruction, Instruction::PortableHashKeccak256(..)),
+                    "Instruction '{instruction}' is not for opcode '{opcode}'."
+                );
+            }
         }
         Ok(())
     }

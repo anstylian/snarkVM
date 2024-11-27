@@ -45,6 +45,9 @@ pub use sign_verify::*;
 use crate::Opcode;
 use console::network::prelude::*;
 
+mod portable_hash;
+pub use portable_hash::*;
+
 #[allow(unused)]
 use console::account::Signature;
 
