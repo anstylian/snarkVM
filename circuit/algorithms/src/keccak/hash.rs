@@ -285,7 +285,7 @@ impl<E: Environment, const TYPE: u8, const VARIANT: usize> Keccak<E, TYPE, VARIA
 #[cfg(all(test, feature = "console"))]
 mod tests {
     use super::*;
-    use console::Rng;
+    use console::{Rng, ToBits};
     use snarkvm_circuit_types::environment::Circuit;
 
     const ITERATIONS: usize = 3;
@@ -315,6 +315,54 @@ mod tests {
                 Circuit::reset();
             }
         };
+    }
+
+    use console::keccak_256_native;
+
+    #[test]
+    fn foo_compare_keccak256() {
+        // input is '1'
+        // 0b01110001
+        let input = 49u8;
+        println!("input: {:?}", input);
+
+        let expected = keccak_256_native(&[input]);
+
+        let zk_input = input.to_bits_le(); // --> This value is 140
+        println!("zk input: {:?}", zk_input);
+        let bool_canditate = zk_hash(&zk_input);
+        let canditate = bool_vector_to_u8_array(&bool_canditate);
+
+        println!("expected: {:?}", expected);
+        println!("canditate: {:?}", canditate);
+        assert_eq!(expected, canditate);
+    }
+
+    fn bool_vector_to_u8_array(bool_vec: &[Boolean<Circuit>]) -> [u8; 32] {
+        let mut byte_array = [0u8; 32];
+        for (i, chunk) in bool_vec.chunks(8).enumerate() {
+            if i >= 32 {
+                break;
+            }
+            let mut byte = 0u8;
+            for (j, bit) in chunk.iter().enumerate() {
+                if bit.eject_value() {
+                    byte |= 1 << j;
+                }
+            }
+            byte_array[i] = byte;
+        }
+        byte_array
+    }
+
+    fn zk_hash(native_input: &[bool]) -> Vec<Boolean<Circuit>> {
+        let keccak = Keccak256::<Circuit>::new();
+        let input = native_input.iter().map(|v| Boolean::<Circuit>::new(Mode::Constant, *v)).collect::<Vec<_>>();
+        let candidate = keccak.hash(&input);
+
+        println!("candidate: {:?}", candidate);
+
+        candidate
     }
 
     fn check_hash(

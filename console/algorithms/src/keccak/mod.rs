@@ -41,6 +41,8 @@ pub type Sha3_384 = Keccak<{ KeccakType::Sha3 as u8 }, 384>;
 /// The SHA3-512 hash function.
 pub type Sha3_512 = Keccak<{ KeccakType::Sha3 as u8 }, 512>;
 
+pub use hash::keccak_256_native;
+
 /// A helper to specify the hash type.
 enum KeccakType {
     Keccak,

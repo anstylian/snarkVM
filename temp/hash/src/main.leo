@@ -6,7 +6,7 @@ program hash.aleo {
     }
 
     // The 'helloworld' main function.
-    transition main() -> field {
+    transition main() -> group {
     /*
         let foobar_item: FooBar = FooBar {
             foo: 5u8,
@@ -14,7 +14,7 @@ program hash.aleo {
         };
         */
 
-        let foobar_item: u8 = 97u8;
-        return Keccak256::hash_to_field(foobar_item);
+        let foobar_item: u8 = 49u8;
+        return Keccak256::hash_to_group(foobar_item);
     }
 }

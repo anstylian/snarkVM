@@ -49,7 +49,7 @@ fn keccak_224_native(preimage: &[u8]) -> [u8; 28] {
 }
 
 /// Computes the Keccak-256 hash of the given preimage as bytes.
-fn keccak_256_native(preimage: &[u8]) -> [u8; 32] {
+pub fn keccak_256_native(preimage: &[u8]) -> [u8; 32] {
     let mut keccak = TinyKeccak::v256();
     keccak.update(preimage);
 
@@ -146,6 +146,56 @@ mod tests {
                 assert_eq!(expected, candidate);
             }
         };
+    }
+
+    #[test]
+    fn foo_compare_keccak256() {
+        let input = 49u8;
+
+        let expected = keccak_256_native(&[input]);
+        println!("expected: {:?}", expected);
+
+        let candidate = keccak_256_native(&[input]);
+
+        assert_eq!(expected, candidate);
+
+        println!("candidate: {:?}", candidate);
+
+        let input = 140u8;
+        let expected = keccak_256_native(&[input]);
+        println!("expected: {:?}", expected);
+
+        let candidate = keccak_256_native(&[input]);
+
+        println!("candidate: {:?}", candidate);
+        assert_eq!(expected, candidate);
+    }
+
+    #[test]
+    fn compare_keccak256_random() {
+        let rng = &mut TestRng::default();
+
+        let mut input_sizes = vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 16, 32, 64, 128, 256, 512, 1024];
+        input_sizes.extend((0..100).map(|_| rng.gen_range(1..1024)));
+
+        for num_inputs in input_sizes {
+            println!("Checking equivalence for {num_inputs} inputs");
+
+            // Prepare the preimage.
+            let input = (0..num_inputs).map(|_| Uniform::rand(rng)).collect::<Vec<bool>>();
+
+            // Compute the native hash.
+            let expected = keccak_256_native(&bytes_from_bits_le(&input));
+            let expected = bits_from_bytes_le(&expected).collect::<Vec<_>>();
+
+            // Compute the console hash.
+            let candidate = Keccak256::default().hash(&input).unwrap();
+            println!("expected: {:?}", expected);
+            println!("candidate: {:?}", candidate);
+            println!();
+
+            assert_eq!(expected, candidate);
+        }
     }
 
     #[test]

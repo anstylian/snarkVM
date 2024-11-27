@@ -14,8 +14,9 @@
 // limitations under the License.
 
 use crate::{
+    Opcode,
+    Operand,
     traits::{RegistersLoad, RegistersLoadCircuit, RegistersStore, RegistersStoreCircuit, StackMatches, StackProgram},
-    Opcode, Operand,
 };
 use console::{
     network::prelude::*,
