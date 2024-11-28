@@ -14,6 +14,7 @@
 // limitations under the License.
 
 use super::*;
+use snarkvm_utilities::ToPortableBits;
 
 impl<N: Network> ToBits for Plaintext<N> {
     /// Returns this plaintext as a list of **little-endian** bits.
@@ -161,5 +162,17 @@ impl<N: Network> ToBits for Plaintext<N> {
                 vec.extend_from_slice(bits)
             }
         }
+    }
+}
+
+impl<N: Network> ToPortableBits for Plaintext<N> {
+    /// Returns this plaintext as a list of **little-endian** bits.
+    fn write_portable_bits_le(&self, vec: &mut Vec<bool>) {
+        todo!()
+    }
+
+    /// Returns this plaintext as a list of **big-endian** bits.
+    fn write_portable_bits_be(&self, vec: &mut Vec<bool>) {
+        todo!()
     }
 }

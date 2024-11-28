@@ -6,15 +6,16 @@ program hash.aleo {
     }
 
     // The 'helloworld' main function.
-    transition main() -> group {
-    /*
+    transition main() -> public u8 {
         let foobar_item: FooBar = FooBar {
             foo: 5u8,
             bar: 8u16,
         };
-        */
 
-        let foobar_item: u8 = 49u8;
-        return Keccak256::hash_to_group(foobar_item);
+        return Keccak256::hash_to_u8(foobar_item);
+    }
+
+    transition foo() -> public [u8; 1] {
+        return [1u8];
     }
 }

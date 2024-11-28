@@ -14,16 +14,14 @@
 // limitations under the License.
 
 use crate::{
-    Opcode,
-    Operand,
     traits::{RegistersLoad, RegistersLoadCircuit, RegistersStore, RegistersStoreCircuit, StackMatches, StackProgram},
+    Opcode, Operand,
 };
 use console::{
     network::prelude::*,
     program::{Literal, LiteralType, Plaintext, PlaintextType, Register, RegisterType, Value},
     types::Boolean,
 };
-use circuit::traits::ToBits;
 
 const EXPECTED_OPERANDS: usize = 1;
 
@@ -64,6 +62,27 @@ impl<N: Network> PortableHashKeccak256<N> {
     pub const fn destination_type(&self) -> &PlaintextType<N> {
         &self.destination_type
     }
+
+    // fn bool_vector_to_u8_array<A: circuit::Aleo<Network = N> + console::prelude::Environment>(
+    //     bool_vec: &[Boolean<A>],
+    // ) -> [u8; 32] {
+    //     use circuit::Eject;
+    //
+    //     let mut byte_array = [0u8; 32];
+    //     for (i, chunk) in bool_vec.chunks(8).enumerate() {
+    //         if i >= 32 {
+    //             break;
+    //         }
+    //         let mut byte = 0u8;
+    //         for (j, bit) in chunk.iter().enumerate() {
+    //             if bit.eject_value() {
+    //                 byte |= 1 << j;
+    //             }
+    //         }
+    //         byte_array[i] = byte;
+    //     }
+    //     byte_array
+    // }
 }
 
 impl<N: Network> PortableHashKeccak256<N> {
@@ -84,18 +103,38 @@ impl<N: Network> PortableHashKeccak256<N> {
         stack: &(impl StackMatches<N> + StackProgram<N>),
         registers: &mut (impl RegistersLoadCircuit<N, A> + RegistersStoreCircuit<N, A>),
     ) -> Result<()> {
+        use circuit::traits::{ToFields, ToPortableBits};
 
         let input = registers.load_circuit(stack, &self.operands[0])?;
-        println!("input: {:?}", input.data_to_bits_le());
-        // let output = circuit::Literal::U8(circuit::U8::from_str("8u8").unwrap());
-        // // Convert the output to a stack value.
-        // let output = circuit::Value::Plaintext(circuit::Plaintext::Literal(output, Default::default()));
+        let value = match input {
+            circuit::Value::Plaintext(value) => match value {
+                circuit::Plaintext::Literal(literal, _) => literal.to_portable_bits_le(),
+                circuit::Plaintext::Struct(_, _) => todo!(),
+                circuit::Plaintext::Array(_, _) => todo!(),
+            },
+            circuit::Value::Record(_) => bail!("Record values are not supported in 'hash.portable' instruction"),
+            circuit::Value::Future(_) => bail!("Future values are not supported in 'hash.portable' instruction"),
+        };
 
-        let v1 = circuit::Literal::U8(circuit::U8::from_str("8u8").unwrap());
-        let v1 = circuit::Plaintext::Literal(v1, Default::default());
-        let output = circuit::Value::Plaintext(circuit::Plaintext::Array(vec![v1], Default::default()));
+        let hash_res = A::hash_keccak256(&value);
 
-        // Store the output.
+        use circuit::Eject;
+        let mut out = vec![];
+
+        for element in hash_res.chunks(8) {
+            let mut value = 0;
+            for (i, bit) in element.iter().enumerate() {
+                if bit.eject_value() {
+                    value |= 1 << i;
+                }
+            }
+            let value = circuit::Literal::U8(circuit::U8::from_str(format!("{}u8", value).as_str()).unwrap());
+            let value = circuit::Plaintext::Literal(value, Default::default());
+
+            out.push(value);
+        }
+
+        let output = circuit::Value::Plaintext(circuit::Plaintext::Array(out, Default::default()));
         registers.store_circuit(stack, &self.destination, output)
     }
 
